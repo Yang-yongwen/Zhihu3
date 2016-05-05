@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.yangyongwen.zhihu3.ZhihuApp;
 import com.yangyongwen.zhihu3.executor.JobExecutor;
+import com.yangyongwen.zhihu3.utils.SharePreferenceUtils;
 
 import java.util.concurrent.Executor;
 
@@ -35,6 +36,12 @@ public class ApplicationModule {
     @Singleton
     Executor provideThreadExecutor(JobExecutor jobExecutor) {
         return jobExecutor;
+    }
+
+    @Provides
+    @Singleton
+    SharePreferenceUtils provideSharePreferenceUtils(){
+        return new SharePreferenceUtils(this.application);
     }
 
 

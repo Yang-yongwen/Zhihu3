@@ -1,10 +1,8 @@
 package com.yangyongwen.zhihu3.di.modules;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.yangyongwen.zhihu3.ZhihuApi.ZhihuApi;
+import com.yangyongwen.zhihu3.zhihuapi.ZhihuApi;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,6 +10,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -40,6 +39,7 @@ public class NetworkModule {
     Retrofit provideRetrofit(Gson gson){
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(ZhihuApi.BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         return retrofit;
@@ -48,7 +48,12 @@ public class NetworkModule {
     @Provides
     @Singleton
     Gson provideGson(){
-        Gson gson=new Gson(); // 自定义Gson,Retrofit解析的时候用到
+        GsonBuilder builder=new GsonBuilder();
+
+
+
+        Gson gson=builder.create(); // 自定义Gson,Retrofit解析的时候用到
+
         return gson;
     }
 

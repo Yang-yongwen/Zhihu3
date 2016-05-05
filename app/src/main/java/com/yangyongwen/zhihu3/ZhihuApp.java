@@ -1,6 +1,7 @@
 package com.yangyongwen.zhihu3;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.yangyongwen.zhihu3.di.components.ApplicationComponent;
 import com.yangyongwen.zhihu3.di.components.DaggerApplicationComponent;
@@ -12,6 +13,8 @@ import com.yangyongwen.zhihu3.di.modules.ApplicationModule;
 public class ZhihuApp extends Application {
 
     private ApplicationComponent applicationComponent;
+
+
 
     @Override public void onCreate() {
         super.onCreate();
@@ -27,6 +30,10 @@ public class ZhihuApp extends Application {
 
     public ApplicationComponent getApplicationComponent(){
         return this.applicationComponent;
+    }
+
+    public static ZhihuApp get(Context context){
+        return (ZhihuApp)context.getApplicationContext();
     }
 
 }

@@ -3,8 +3,9 @@ package com.yangyongwen.zhihu3;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
-import com.yangyongwen.zhihu3.ZhihuApi.ZhihuApi;
+import com.yangyongwen.zhihu3.zhihuapi.ZhihuApi;
 import com.yangyongwen.zhihu3.datastructure.LatestStories;
 
 import javax.inject.Inject;
@@ -12,9 +13,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -26,19 +27,31 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @OnClick(R.id.button)
     void onClick(Button button){
-        Call<LatestStories> stringCall=mZhihuApi.latestStory();
-        stringCall.enqueue(new Callback<LatestStories>() {
+        Observer<LatestStories> observer=new Observer<LatestStories>() {
             @Override
-            public void onResponse(Call<LatestStories> call, Response<LatestStories> response) {
-                LatestStories latestStories=response.body();
-                int i=1;
+            public void onCompleted() {
+
             }
 
             @Override
-            public void onFailure(Call<LatestStories> call, Throwable t) {
-                int i=1;
+            public void onError(Throwable e) {
+
             }
-        });
+
+            @Override
+            public void onNext(LatestStories latestStories) {
+                LatestStories latestStories1=latestStories;
+                int i;
+            }
+        };
+
+        Toast.makeText(this,"..",Toast.LENGTH_LONG).show();
+
+        mZhihuApi.latestStory()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
     }
 
     @Override

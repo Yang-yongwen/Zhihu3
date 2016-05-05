@@ -4,7 +4,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.yangyongwen.zhihu3.WelcomeActivity;
-import com.yangyongwen.zhihu3.ZhihuApi.ZhihuApi;
+import com.yangyongwen.zhihu3.di.modules.HomePageActivityModule;
+import com.yangyongwen.zhihu3.zhihuapi.ZhihuApi;
 import com.yangyongwen.zhihu3.di.modules.ApplicationModule;
 import com.yangyongwen.zhihu3.di.modules.NetworkModule;
 
@@ -27,11 +28,6 @@ public interface ApplicationComponent {
 
     void inject(WelcomeActivity baseActivity);
 
-    Context context();
-    Executor threadExecutor();
-
-    ZhihuApi zhihuApi();
-    Retrofit retrofit();
-    Gson gson();
+    HomePageActivityComponent plus(HomePageActivityModule homePageActivityModule);
 
 }
