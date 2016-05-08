@@ -14,7 +14,7 @@ import com.yangyongwen.zhihu3.dao.Story;
 /** 
  * DAO for table "STORY".
 */
-public class StoryDao extends AbstractDao<Story, Integer> {
+public class StoryDao extends AbstractDao<Story, Long> {
 
     public static final String TABLENAME = "STORY";
 
@@ -23,15 +23,16 @@ public class StoryDao extends AbstractDao<Story, Integer> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Integer.class, "id", true, "ID");
+        public final static Property Id = new Property(0, Long.class, "id", true, "ID");
         public final static Property Type = new Property(1, Integer.class, "type", false, "TYPE");
         public final static Property Multipic = new Property(2, Boolean.class, "multipic", false, "MULTIPIC");
         public final static Property Readed = new Property(3, Boolean.class, "readed", false, "READED");
         public final static Property Title = new Property(4, String.class, "title", false, "TITLE");
-        public final static Property Images = new Property(5, String.class, "images", false, "IMAGES");
-        public final static Property Ga_prefix = new Property(6, String.class, "ga_prefix", false, "GA_PREFIX");
-        public final static Property Date = new Property(7, String.class, "date", false, "DATE");
+        public final static Property Ga_prefix = new Property(5, String.class, "ga_prefix", false, "GA_PREFIX");
+        public final static Property Date = new Property(6, String.class, "date", false, "DATE");
     };
+
+    private DaoSession daoSession;
 
 
     public StoryDao(DaoConfig config) {
@@ -40,6 +41,7 @@ public class StoryDao extends AbstractDao<Story, Integer> {
     
     public StoryDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -51,9 +53,8 @@ public class StoryDao extends AbstractDao<Story, Integer> {
                 "\"MULTIPIC\" INTEGER," + // 2: multipic
                 "\"READED\" INTEGER," + // 3: readed
                 "\"TITLE\" TEXT," + // 4: title
-                "\"IMAGES\" TEXT," + // 5: images
-                "\"GA_PREFIX\" TEXT," + // 6: ga_prefix
-                "\"DATE\" TEXT);"); // 7: date
+                "\"GA_PREFIX\" TEXT," + // 5: ga_prefix
+                "\"DATE\" TEXT);"); // 6: date
     }
 
     /** Drops the underlying database table. */
@@ -67,7 +68,7 @@ public class StoryDao extends AbstractDao<Story, Integer> {
     protected void bindValues(SQLiteStatement stmt, Story entity) {
         stmt.clearBindings();
  
-        Integer id = entity.getId();
+        Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
@@ -92,40 +93,40 @@ public class StoryDao extends AbstractDao<Story, Integer> {
             stmt.bindString(5, title);
         }
  
-        String images = entity.getImages();
-        if (images != null) {
-            stmt.bindString(6, images);
-        }
- 
         String ga_prefix = entity.getGa_prefix();
         if (ga_prefix != null) {
-            stmt.bindString(7, ga_prefix);
+            stmt.bindString(6, ga_prefix);
         }
  
         String date = entity.getDate();
         if (date != null) {
-            stmt.bindString(8, date);
+            stmt.bindString(7, date);
         }
+    }
+
+    @Override
+    protected void attachEntity(Story entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */
     @Override
-    public Integer readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getInt(offset + 0);
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public Story readEntity(Cursor cursor, int offset) {
         Story entity = new Story( //
-            cursor.isNull(offset + 0) ? null : cursor.getInt(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // type
             cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2) != 0, // multipic
             cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0, // readed
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // title
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // images
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // ga_prefix
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // date
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ga_prefix
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // date
         );
         return entity;
     }
@@ -133,25 +134,25 @@ public class StoryDao extends AbstractDao<Story, Integer> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Story entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getInt(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setType(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
         entity.setMultipic(cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2) != 0);
         entity.setReaded(cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0);
         entity.setTitle(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setImages(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setGa_prefix(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setDate(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setGa_prefix(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDate(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     /** @inheritdoc */
     @Override
-    protected Integer updateKeyAfterInsert(Story entity, long rowId) {
-        return entity.getId();
+    protected Long updateKeyAfterInsert(Story entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     /** @inheritdoc */
     @Override
-    public Integer getKey(Story entity) {
+    public Long getKey(Story entity) {
         if(entity != null) {
             return entity.getId();
         } else {

@@ -1,20 +1,15 @@
 package com.yangyongwen.zhihu3.di.components;
 
-import android.content.Context;
-
-import com.google.gson.Gson;
 import com.yangyongwen.zhihu3.WelcomeActivity;
-import com.yangyongwen.zhihu3.di.modules.HomePageActivityModule;
-import com.yangyongwen.zhihu3.zhihuapi.ZhihuApi;
+import com.yangyongwen.zhihu3.di.modules.DaoDbModule;
+import com.yangyongwen.zhihu3.di.modules.HomePageFragmentModule;
 import com.yangyongwen.zhihu3.di.modules.ApplicationModule;
 import com.yangyongwen.zhihu3.di.modules.NetworkModule;
-
-import java.util.concurrent.Executor;
+import com.yangyongwen.zhihu3.view.activity.HomePageActivity;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import retrofit2.Retrofit;
 
 /**
  * Created by yangyongwen on 16/5/2.
@@ -22,12 +17,13 @@ import retrofit2.Retrofit;
 
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, DaoDbModule.class})
 public interface ApplicationComponent {
 
 
     void inject(WelcomeActivity baseActivity);
+    void inject(HomePageActivity homePageActivity);
 
-    HomePageActivityComponent plus(HomePageActivityModule homePageActivityModule);
+    HomePageFragmentComponent plus(HomePageFragmentModule homePageFragmentModule);
 
 }

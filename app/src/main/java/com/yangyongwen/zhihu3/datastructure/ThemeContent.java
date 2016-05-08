@@ -1,4 +1,4 @@
-package com.yangyongwen.zhihu3.datastructure; ;
+package com.yangyongwen.zhihu3.datastructure; ;import com.yangyongwen.zhihu3.dao.Story;
 
 /**
  * Created by samsung on 2016/3/31.
