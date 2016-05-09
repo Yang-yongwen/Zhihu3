@@ -34,7 +34,7 @@
             android:layout_weight="6"
             android:layout_height="match_parent" />
 
-        <com.yangyongwen.zhihudailypaper.ui.AspectRatioView
+        <com.yangyongwen.zhihu3.customview.AspectRatioView
             android:id="@+id/story_item_icon_container"
             android:layout_weight="1"
             app:aspectRatio="1.1"
@@ -48,8 +48,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </com.yangyongwen.zhihudailypaper.ui.AspectRatioView>
+            <ImageView
+                android:id="@+id/story_multipic"
+                android:visibility="gone"
+                android:src="@drawable/multi_pic"
+                android:scaleType="fitXY"
+                android:layout_gravity="bottom|right"
+                android:layout_width="30dp"
+                android:layout_height="15dp" />
 
+
+        </com.yangyongwen.zhihu3.customview.AspectRatioView>
 
     </LinearLayout>
 

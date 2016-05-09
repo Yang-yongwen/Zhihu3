@@ -13,7 +13,9 @@ import com.yangyongwen.zhihu3.dao.TopStoryDao;
 import com.yangyongwen.zhihu3.datastructure.DailyStory;
 import com.yangyongwen.zhihu3.datastructure.LatestStories;
 import com.yangyongwen.zhihu3.di.FragmentScope;
+import com.yangyongwen.zhihu3.utils.DateUtils;
 import com.yangyongwen.zhihu3.utils.LogUtils;
+import com.yangyongwen.zhihu3.utils.SharePreferenceUtils;
 import com.yangyongwen.zhihu3.zhihuapi.ZhihuApi;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import dagger.Module;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -35,7 +38,7 @@ import rx.schedulers.Schedulers;
 @FragmentScope
 public class HomePageModel implements Model {
 
-
+    SharePreferenceUtils sharePreferenceUtils;
 
     //component 沒有inject 該對象，所以這裏是無法注入的，model 也應該在fragment中進行注入（通過fragment的構造函數注入），然後set 到presenter中去 參考clean project
 
@@ -53,14 +56,19 @@ public class HomePageModel implements Model {
 
 
     @Inject
-    public HomePageModel(ZhihuApi zhihuApi,DaoSession daoSession){
+    public HomePageModel(ZhihuApi zhihuApi,DaoSession daoSession,SharePreferenceUtils s){
         this.zhihuApi=zhihuApi;
         this.daoSession=daoSession;
         this.storyDao=daoSession.getStoryDao();
         this.imageDao=daoSession.getImageDao();
         this.topStoryDao=daoSession.getTopStoryDao();
+        this.sharePreferenceUtils=s;
     }
 
+
+    public String getToday(){
+        return sharePreferenceUtils.getStringValue("today");
+    }
 
     public Observable<Story[]> queryDailyStories(final String date){
 
@@ -70,6 +78,7 @@ public class HomePageModel implements Model {
                     public Observable<Story[]> call(String date) {
                         List<Story> storyList=storyDao.queryBuilder()
                                 .where(StoryDao.Properties.Date.eq(date))
+                                .orderAsc(StoryDao.Properties.Order)
                                 .list();
                         Story[] stories=storyList.toArray(new Story[storyList.size()]);
                         List<Image> images;
@@ -89,14 +98,17 @@ public class HomePageModel implements Model {
                             @Override
                             public Observable<?> call(Throwable throwable) {
                                 if (throwable instanceof IllegalArgumentException || throwable instanceof NullPointerException) {
-                                    return zhihuApi.dailyStory(date)
+                                    return zhihuApi.dailyStory(DateUtils.tomorrow(date))
                                             .doOnNext(new Action1<DailyStory>() {
                                                 @Override
                                                 public void call(DailyStory dailyStory) {
                                                     Story[] stories=dailyStory.getStories();
+                                                    Long order=sharePreferenceUtils.getLongValue("insert_order",-1)+1;
                                                     for(Story story:stories){
-                                                        insertStory(date,story);
+                                                        insertStory(date,story,order);
+                                                        order++;
                                                     }
+                                                    sharePreferenceUtils.putLongValue("insert_order",order);
                                                 }
                                             });
                                 }
@@ -106,7 +118,23 @@ public class HomePageModel implements Model {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());
+    }
 
+
+    public Observable<TopStory[]> queryTopStories(){
+        return Observable.just(null)
+                .map(new Func1<Object, TopStory[]>() {
+                    @Override
+                    public TopStory[] call(Object o) {
+                        List<TopStory> topStories;
+                        topStories=topStoryDao.queryBuilder()
+                                .orderAsc(TopStoryDao.Properties.Order)
+                                .list();
+                        return topStories.toArray(new TopStory[topStories.size()]);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -118,26 +146,35 @@ public class HomePageModel implements Model {
                         Story[] stories=latestStories.getStories();
                         TopStory[] topStories=latestStories.getTopStories();
                         String date=latestStories.getDate();
-                        for (Story story:stories){
-                            insertStory(date,story);
+                        Long order=sharePreferenceUtils.getLongValue("insert_order",-1)+1;
+                        for(Story story:stories){
+                            insertStory(date,story,order);
+                            order++;
                         }
+                        sharePreferenceUtils.putLongValue("insert_order",order);
                         topStoryDao.deleteAll();
+                        sharePreferenceUtils.putStringValue("today",date);
+                        Long order1=new Long(1);
                         for (TopStory topStory:topStories){
+                            topStory.setOrder(order1);
+                            order1++;
                             topStory.setDate(date);
                             topStory.setReaded(false);
                             topStoryDao.insertOrReplace(topStory);
                         }
                     }
                 })
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
-    private void insertStory(String date,Story story){
+    private void insertStory(String date,Story story,Long order){
         for(Image image:story.getImages()){
             image.setId(story.getId());
             imageDao.insertOrReplace(image);
         }
+        story.setOrder(order);
         story.setDate(date);
         story.setReaded(false);
         storyDao.insertOrReplace(story);

@@ -30,6 +30,7 @@ public class StoryDao extends AbstractDao<Story, Long> {
         public final static Property Title = new Property(4, String.class, "title", false, "TITLE");
         public final static Property Ga_prefix = new Property(5, String.class, "ga_prefix", false, "GA_PREFIX");
         public final static Property Date = new Property(6, String.class, "date", false, "DATE");
+        public final static Property Order = new Property(7, Long.class, "order", false, "ORDER");
     };
 
     private DaoSession daoSession;
@@ -54,7 +55,8 @@ public class StoryDao extends AbstractDao<Story, Long> {
                 "\"READED\" INTEGER," + // 3: readed
                 "\"TITLE\" TEXT," + // 4: title
                 "\"GA_PREFIX\" TEXT," + // 5: ga_prefix
-                "\"DATE\" TEXT);"); // 6: date
+                "\"DATE\" TEXT," + // 6: date
+                "\"ORDER\" INTEGER);"); // 7: order
     }
 
     /** Drops the underlying database table. */
@@ -102,6 +104,11 @@ public class StoryDao extends AbstractDao<Story, Long> {
         if (date != null) {
             stmt.bindString(7, date);
         }
+ 
+        Long order = entity.getOrder();
+        if (order != null) {
+            stmt.bindLong(8, order);
+        }
     }
 
     @Override
@@ -126,7 +133,8 @@ public class StoryDao extends AbstractDao<Story, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0, // readed
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // title
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ga_prefix
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // date
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // date
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7) // order
         );
         return entity;
     }
@@ -141,6 +149,7 @@ public class StoryDao extends AbstractDao<Story, Long> {
         entity.setTitle(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setGa_prefix(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDate(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setOrder(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
      }
     
     /** @inheritdoc */

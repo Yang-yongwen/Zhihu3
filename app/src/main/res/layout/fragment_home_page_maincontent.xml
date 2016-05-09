@@ -4,6 +4,39 @@
     android:layout_height="match_parent">
     <include layout="@layout/toolbar_actionbar"/>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<ImageView-->
+                <!--android:src="@drawable/splash"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+
+        <!--</ScrollView>-->
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/homepage_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical">
+        </android.support.v7.widget.RecyclerView>
+
+
+
+
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 

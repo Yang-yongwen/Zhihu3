@@ -14,6 +14,7 @@ public class TopStory {
     private String ga_prefix;
     private String date;
     private String image;
+    private Long order;
 
     public TopStory() {
     }
@@ -22,7 +23,7 @@ public class TopStory {
         this.id = id;
     }
 
-    public TopStory(Long id, Integer type, Boolean multipic, Boolean readed, String title, String ga_prefix, String date, String image) {
+    public TopStory(Long id, Integer type, Boolean multipic, Boolean readed, String title, String ga_prefix, String date, String image, Long order) {
         this.id = id;
         this.type = type;
         this.multipic = multipic;
@@ -31,6 +32,7 @@ public class TopStory {
         this.ga_prefix = ga_prefix;
         this.date = date;
         this.image = image;
+        this.order = order;
     }
 
     public Long getId() {
@@ -95,6 +97,14 @@ public class TopStory {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Long getOrder() {
+        return order;
+    }
+
+    public void setOrder(Long order) {
+        this.order = order;
     }
 
 }

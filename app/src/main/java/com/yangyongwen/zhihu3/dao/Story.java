@@ -17,6 +17,7 @@ public class Story {
     private String title;
     private String ga_prefix;
     private String date;
+    private Long order;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -33,7 +34,7 @@ public class Story {
         this.id = id;
     }
 
-    public Story(Long id, Integer type, Boolean multipic, Boolean readed, String title, String ga_prefix, String date) {
+    public Story(Long id, Integer type, Boolean multipic, Boolean readed, String title, String ga_prefix, String date, Long order) {
         this.id = id;
         this.type = type;
         this.multipic = multipic;
@@ -41,6 +42,7 @@ public class Story {
         this.title = title;
         this.ga_prefix = ga_prefix;
         this.date = date;
+        this.order = order;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -103,6 +105,14 @@ public class Story {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public Long getOrder() {
+        return order;
+    }
+
+    public void setOrder(Long order) {
+        this.order = order;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

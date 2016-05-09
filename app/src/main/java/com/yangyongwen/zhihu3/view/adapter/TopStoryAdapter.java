@@ -10,6 +10,8 @@ import com.yangyongwen.zhihu3.view.fragment.TopStoryFragment;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Created by yangyongwen on 16/5/8.
  */
@@ -21,6 +23,7 @@ public class TopStoryAdapter extends FragmentStatePagerAdapter {
     public final static String IMAGE="topstory_image";
 
 
+    @Inject
     public TopStoryAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -50,6 +53,7 @@ public class TopStoryAdapter extends FragmentStatePagerAdapter {
 
     public void setTopStories(ArrayList<TopStory> mTopStories){
         this.mTopStories=mTopStories;
+        notifyDataSetChanged();
     }
 
 

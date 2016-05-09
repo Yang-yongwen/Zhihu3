@@ -23,6 +23,7 @@ public class DaoGeneratorZhihu {
     private static void addStory(Schema schema){
         Entity story=schema.addEntity("Story");
 
+
         story.addLongProperty("id").primaryKey();
         story.addIntProperty("type");
         story.addBooleanProperty("multipic");
@@ -30,6 +31,7 @@ public class DaoGeneratorZhihu {
         story.addStringProperty("title");
         story.addStringProperty("ga_prefix");
         story.addStringProperty("date");
+        story.addLongProperty("order");
 
         Entity image=schema.addEntity("Image");
         Property id=image.addLongProperty("id").getProperty();
@@ -51,6 +53,7 @@ public class DaoGeneratorZhihu {
         topStory.addStringProperty("ga_prefix");
         topStory.addStringProperty("date");
         topStory.addStringProperty("image");
+        topStory.addLongProperty("order");
     }
 
 

@@ -31,6 +31,7 @@ public class TopStoryDao extends AbstractDao<TopStory, Long> {
         public final static Property Ga_prefix = new Property(5, String.class, "ga_prefix", false, "GA_PREFIX");
         public final static Property Date = new Property(6, String.class, "date", false, "DATE");
         public final static Property Image = new Property(7, String.class, "image", false, "IMAGE");
+        public final static Property Order = new Property(8, Long.class, "order", false, "ORDER");
     };
 
 
@@ -53,7 +54,8 @@ public class TopStoryDao extends AbstractDao<TopStory, Long> {
                 "\"TITLE\" TEXT," + // 4: title
                 "\"GA_PREFIX\" TEXT," + // 5: ga_prefix
                 "\"DATE\" TEXT," + // 6: date
-                "\"IMAGE\" TEXT);"); // 7: image
+                "\"IMAGE\" TEXT," + // 7: image
+                "\"ORDER\" INTEGER);"); // 8: order
     }
 
     /** Drops the underlying database table. */
@@ -106,6 +108,11 @@ public class TopStoryDao extends AbstractDao<TopStory, Long> {
         if (image != null) {
             stmt.bindString(8, image);
         }
+ 
+        Long order = entity.getOrder();
+        if (order != null) {
+            stmt.bindLong(9, order);
+        }
     }
 
     /** @inheritdoc */
@@ -125,7 +132,8 @@ public class TopStoryDao extends AbstractDao<TopStory, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // title
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ga_prefix
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // date
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // image
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // image
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8) // order
         );
         return entity;
     }
@@ -141,6 +149,7 @@ public class TopStoryDao extends AbstractDao<TopStory, Long> {
         entity.setGa_prefix(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDate(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setImage(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setOrder(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
      }
     
     /** @inheritdoc */
